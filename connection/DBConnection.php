@@ -1,3 +1,4 @@
+
 <?php
 
 /*
@@ -5,6 +6,9 @@
  * Date: April 26, 2017
  * Description: This file contains the DB connection functions
  */
+
+require 'Globals.php';
+
 class DBConnection {
 
 	private $connection;
@@ -18,11 +22,12 @@ class DBConnection {
 		
 		try { 
 			
-			$this->connection = new PDO("mysql:host=localhost;dbname=$db", "deles", "Delesjh1");
+			$this->connection = new PDO("mysql:host=localhost;dbname=$db", SYSTEM_NAME, SYSTEM_PASS);
 			
 		} catch(Exception $e) {
 			
-			die($e->getMessage());
+			error_log($e->getMessage());
+			die("Cannot establish a connection");
 		}
 	}
 	
