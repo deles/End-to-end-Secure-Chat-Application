@@ -1,0 +1,15 @@
+#banner {
+  width: 100%;
+  background-image: url(https://unsecure.website/images/logo.png);
+  height: 100px;
+  background-color: WHITE;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#login-form {
+	margin: 0 auto;
+}
+
+.row { 
+	margin-top:20px; 
+}

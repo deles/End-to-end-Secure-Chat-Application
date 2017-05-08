@@ -1,0 +1,1 @@
+<?php echo 'Member area'?>
