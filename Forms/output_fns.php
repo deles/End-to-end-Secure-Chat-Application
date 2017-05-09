@@ -62,7 +62,7 @@ function display_login_form () {
 	
 	<hl> Please Log In:</hl>
 	
-	<form method="post" action="secret.php">
+	<form method="post" action="member.php">
 	
 	<div class="row">
 	
@@ -104,23 +104,23 @@ function display_registration_form() {
 	
 	<hl> Registration Form:</hl>
 	
-	<form method="post" action="register_form.php">
+	<form method="post" action="register_new.php">
 	
 	 <div class="row">
-    	<div class="col-md-3"><label for="name">Username:</label></div>
-    	<div class="col-md-5"> <input  type="text" name="name" id="name" maxlength="15" /> </div>
+    	<div class="col-md-3"><label for="username">Username (max 16 chars):</label></div>
+    	<div class="col-md-5"> <input  type="text" name="username" id="username" maxlength="15" /> </div>
     	<div class="col-md-4"></div>
 	</div>
 	
 	 <div class="row">
-    	<div class="col-md-3"><label for="password">Password:</label></div>
-		<div class="col-md-5"> <input  type="text" name="password" id="password" maxlength="15" /> </div> 
+    	<div class="col-md-3"><label for="password">Password (12-160 chars):</label></div>
+		<div class="col-md-5"> <input  type="text" name="password" id="password" maxlength="255" /> </div> 
 		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row">
-		<div class="col-md-3"><label for="re-password">Re-enter Password:</label></div>
-		<div class="col-md-5"> <input  type="text" name="re-password" id="password" maxlength="15" /> </div> 
+		<div class="col-md-3"><label for="password2">Re-enter Password:</label></div>
+		<div class="col-md-5"> <input  type="text" name="password2" id="password2" maxlength="255" /> </div> 
 		<div class="col-md-4"></div> 
 	</div>
 	

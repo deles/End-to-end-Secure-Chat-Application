@@ -2,10 +2,20 @@
 
 require_once ('unsecure_fns.php');
 
-$email = $_POST['email'];
-$username = $_POST['username'];
-$password = $_POST['password'];
-$password2 = $_POST['password2'];
+$email     = trim($_POST['email']);
+$username  = trim($_POST['username']);
+$firstName = trim($_POST['first-name']);
+$lastName  = trim($_POST['last-name']);
+$midName   = trim($_POST['middle-name']);
+$password  = trim($_POST['password']);
+$password2 = trim($_POST['password2']);
+
+$address = trim($_POST['address']);
+$city    = trim($_POST['city']);
+$state   = trim($_POST['state']);
+$country = trim($_POST['country']);
+$zip     = trim($_POST['zip-code']);
+$phone   = trim($_POST['phone']);
 
 session_start();//May need this later
 
@@ -43,7 +53,8 @@ try {
 	
 	//Attempt to register
 	
-	register($username, $email, $password);
+	register($username, $password, $email, $phone, $firstName,
+				$middleName, $lastName, $address, $city, $state, $country, $zip);//Will throw exception
 	
 	//register session variable
 	
