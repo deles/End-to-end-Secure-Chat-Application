@@ -219,6 +219,93 @@ function do_html_url($link, $text) {
 </html>
 <?php
 }
+
+function display_password_form() {
+	
 ?>
 
+<!DOCTYPE html>
+
+<html>
+
+<body> 
+
+<div class="container">
+	
+	<hl> Change Password:</hl>
+	
+	<form method="post" action="change_password_new.php">
+	
+	<div class="row">
+	
+		<div class="col-md-3"><label for="old-password">Old Password:</label></div>
+		<div class="col-md-5"> <input  type="text" name="old-password" id="old-password" maxlength="255" /> </div>
+		<div class="col-md-4"></div>  
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3"><label for="password">Password:</label></div>
+		<div class="col-md-5"> <input  type="text" name="password" id="password" maxlength="255" /> </div>  
+		<div class="col-md-4"></div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3"><label for="password2">Re-enter Password:</label></div>
+		<div class="col-md-5"> <input  type="text" name="password2" id="password2" maxlength="255" /> </div>  
+		<div class="col-md-4"></div>
+	</div>
+	
+	
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-5"> <button type="submit" name="submit">Change Password</button> </div>  
+		<div class="col-md-4"></div>
+	</div>
+	</form>
+</div>
+
+</body>
+</html>
+<?php
+
+} 
+
+function display_forgot_form() {
+	
+?>
+
+<!DOCTYPE html>
+
+<html>
+
+<body> 
+
+<div class="container">
+	
+	<hl> Forgot Your Password?</hl>
+	
+	<form method="post" action="forgot_passwd.php">
+	
+	<div class="row">
+	
+		<div class="col-md-3"><label for="username">Enter your username:</label></div>
+		<div class="col-md-5"> <input  type="text" name="username" id="username" maxlength="15" /> </div>
+		<div class="col-md-4"></div>  
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-5"> <button type="submit" name="submit">Change Password</button> </div>  
+		<div class="col-md-4"></div>
+	</div>
+	</form>
+</div>
+
+</body>
+</html>
+<?php
+
+} 
+
+?>
 

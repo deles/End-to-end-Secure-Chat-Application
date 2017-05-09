@@ -46,11 +46,11 @@ if($username && $password) {
 		exit;
 	}
 	
-do_html_header('Home');
+do_html_header('Unsecured Home');
 
 check_valid_user();
 
-
+//chat app here
 do_html_footer();
 }
 

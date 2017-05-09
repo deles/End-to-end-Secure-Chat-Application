@@ -58,7 +58,7 @@ try {
 	
 	//register session variable
 	
-	//$_SESSION['valid_user'];
+	$_SESSION['valid_user'] = $username;
 	
 	do_html_header('Registration Successful!');
 	

@@ -8,4 +8,9 @@
 	
 	do_html_footer();
 	
+	
+
+	//trigger_error("oh shit!", E_USER_ERROR);
+	//error_log("shit!");
+	
 ?>
