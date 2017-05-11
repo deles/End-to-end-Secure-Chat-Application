@@ -4,24 +4,24 @@ require_once ('unsecure_fns.php');
 
 /**
  * Register the user
- * @param unknown $username
- * @param unknown $password
- * @param unknown $email
- * @param unknown $phone
- * @param unknown $firstName
- * @param unknown $middleName
- * @param unknown $lastName
- * @param unknown $address
- * @param unknown $city
- * @param unknown $state
- * @param unknown $country
- * @param unknown $zip
+ * @Value unknown $username
+ * @Value unknown $password
+ * @Value unknown $email
+ * @Value unknown $phone
+ * @Value unknown $firstName
+ * @Value unknown $middleName
+ * @Value unknown $lastName
+ * @Value unknown $address
+ * @Value unknown $city
+ * @Value unknown $state
+ * @Value unknown $country
+ * @Value unknown $zip
  * @throws Exception
  */
 function register($username, $password, $email, $phone, $firstName,
 					$middleName, $lastName, $address, $city, $state, $country, $zip) {
 	
-	$connection = new DBConnection();
+	$obj = new DBConnection();
 	
 	//Check for a unique username
 	
@@ -32,73 +32,90 @@ function register($username, $password, $email, $phone, $firstName,
 		throw new Exception('That username is taken - Please choose another name.');
 	}
 	
+	if(email_exist($email)) {
+		
+		throw new Exception('That email is in use - Please choose another email.');
+	}
+	
 	//insert into database
 	
-	$stmt = $connection->prepare("INSERT INTO customer (user_id, password, email, phone, first_name, middle_name, 
-														last_name, address, city, state, country, zip, active, flag) 
+	$stmt = $obj->getConn()->prepare("INSERT INTO customer (user_id, password, email, phone, first_name, middle_name, 
+														last_name, address, city, state, country, zip_code, active, flag) 
 							      VALUES (:user_id, :password, :email, :phone, :first_name, :middle_name, 
 										  :last_name, :address, :city, :state, :country, :zip, :active, :flag)");
 	
-	$stmt->bindParam(':user_id', $username);
-	$stmt->bindParam(':password', $hashPW);
-	$stmt->bindParam(':email', $email);
-	$stmt->bindParam(':phone', $phone);
-	$stmt->bindParam(':first_name', $firstName);
-	$stmt->bindParam(':middle_name', $middleName);
-	$stmt->bindParam(':last_name', $lastName);
-	$stmt->bindParam(':address', $address);
-	$stmt->bindParam(':city', $city);
-	$stmt->bindParam(':state', $state);
-	$stmt->bindParam(':country', $country);
-	$stmt->bindParam(':zip_code', $zip);
-	$stmt->bindParam(':active', 'Y');
-	$stmt->bindParam(':flag', 'C');
-	
-	
+
 	$options = [
 			'cost' => 9,
 	];
 	
 	$hashPW = password_hash($password, PASSWORD_BCRYPT, $options);
-
+	
+	
+	$stmt->bindValue(":user_id", $username, PDO::PARAM_STR);
+	$stmt->bindValue(":password", $hashPW, PDO::PARAM_STR);
+	$stmt->bindValue(":email", $email, PDO::PARAM_STR);
+	$stmt->bindValue(":phone", $phone, PDO::PARAM_STR);
+	$stmt->bindValue(":first_name", $firstName, PDO::PARAM_STR);
+	$stmt->bindValue(":middle_name", $middleName, PDO::PARAM_STR);
+	$stmt->bindValue(":last_name", $lastName, PDO::PARAM_STR);
+	$stmt->bindValue(":address", $address, PDO::PARAM_STR);
+	$stmt->bindValue(":city", $city,PDO::PARAM_STR);
+	$stmt->bindValue(":state", $state, PDO::PARAM_STR);
+	$stmt->bindValue(":country", $country, PDO::PARAM_STR);
+	$stmt->bindValue(":zip", $zip, PDO::PARAM_STR);
+	
+	$active = 'Y';
+	$flag   = 'C';
+	
+	$stmt->bindValue(":active", $active, PDO::PARAM_STR);
+	$stmt->bindValue(":flag", $flag, PDO::PARAM_STR);
 	
 	$stmt->execute();
 	
-	if(!$result) {
+	$rows = $stmt->rowCount();
+
+	if($rows <= 0) {
 		
 		throw new Exception('Could not register you in the database - Please try again later');
 	}
+	
+	add_history($username, $hashPW);
+	audit($username, "AA", "NA", "Active");
 	
 	return true;
 }
 
 /**
  * Check user against DB
- * @param unknown $username
- * @param unknown $password
+ * @Value unknown $username
+ * @Value unknown $password
  * @throws Exception
  */
 function login($username, $password) {
 	
-	$connection = new DBConnection();
+
+	$verified = has_account($username, $password);
 	
-	$sth = $connection->prepare('SELECT user_id, password
-    						     FROM customer
-    							 WHERE user_id = :username');
-	
-	$sth->bindParam(':username', $username, PDO::PARAM_STR, 15);
-	$sth->bindParam(':password', $password, PDO::PARAM_STR, 255);
-	
-	$sth->execute();
-	
-	$result = $sth->fetchAll();
-	
-	$verified = password_verify($password, $result[0]['password']); //returns alg, cost, and salt. Safe against timing attacks
-	
-	if(sizeof($result) <= 0 || !verified) {
+	if($verified != 1) {
 		
-		throw new Exception('Username or Password incorrect!');
-	}
+		$attempts = get_failed_attempts($username);
+		add_failed_attempts($username, $attempts + 1);
+		
+		if($attempts > 3) {
+			
+			lock_account($username);
+			
+			//if account is locked, notify user!
+			echo 'This account has been locked! Contact the administrator!<br>';
+		} else {
+			echo 'Username or Password incorrect!<br>';
+		}
+		
+		throw new Exception('Account cannot be accessed - Locked or incorrect PW');
+	} 
+	
+	update_login($username);
 	
 	return true;
 }
@@ -116,11 +133,11 @@ function check_valid_user() {
 	} else {
 		
 		//They aren't logged in
-		do_html_header('Problem:');
+		do_html_heading('Problem:');
 		
 		echo "You are not logged in.<br>";
 		
-		do_html_url('login.php', 'Login');
+		do_html_url('https://unsecure.website/login.php', 'Login');
 		
 		do_html_footer();
 		exit;
@@ -129,9 +146,9 @@ function check_valid_user() {
 
 /**
  * This function updates the password
- * @param unknown $username
- * @param unknown $oldPass
- * @param unknown $newPass
+ * @Value unknown $username
+ * @Value unknown $oldPass
+ * @Value unknown $newPass
  * @throws Exception
  */
 function change_password($username, $oldPass, $newPass) {
@@ -143,11 +160,11 @@ function change_password($username, $oldPass, $newPass) {
 	
 	login($username, $oldPass);
 	
-	$connection = new DBConnection();
+	$obj = new DBConnection();
 	
-	$sth = $connection->prepare('UPDATE customer
-    						     SET password = :password
-    							 WHERE user_id = :username');
+	$sth = $obj->getConn()->prepare('UPDATE customer
+    						         SET password = :password
+    							     WHERE user_id = :username');
 	
 	$options = [
 			'cost' => 9,
@@ -155,8 +172,8 @@ function change_password($username, $oldPass, $newPass) {
 	
 	$hashPW = password_hash($newPass, PASSWORD_BCRYPT, $options);
 	
-	$sth->bindParam(':username', $username);
-	$sth->bindParam(':password', $hashPW);
+	$sth->bindValue(':username', $username);
+	$sth->bindValue(':password', $hashPW);
 	
 	$sth->execute();
 	
@@ -164,15 +181,20 @@ function change_password($username, $oldPass, $newPass) {
 	
 	if($rows > 0) {
 		
+		add_history($username, $hashPW);
+		audit($username, "AD", "oldpass", "newpass");
+		
 		return true;//change succesful
 	} else {
 		throw new Exception('Password could not be changed.');
 	}
+	
+	return false;
 }
 
 /**
  * This function resets the password
- * @param unknown $username
+ * @Value unknown $username
  * @throws Exception
  * @return unknown
  */
@@ -194,11 +216,11 @@ function reset_password($username) {
 	$rand = rand(0,999);
 	$newPass .= $rand;
 	
-	$connection = new DBConnection();
+	$obj = new DBConnection();
 	
-	$sth = $connection->prepare('UPDATE customer
-    						     SET password = :password
-    							 WHERE user_id = :username');
+	$sth = $obj->getConn()->prepare('UPDATE customer
+    						         SET password = :password
+    							     WHERE user_id = :username');
 	
 	$options = [
 			'cost' => 9,
@@ -206,8 +228,8 @@ function reset_password($username) {
 	
 	$hashPW = password_hash($newPass, PASSWORD_BCRYPT, $options);
 	
-	$sth->bindParam(':username', $username);
-	$sth->bindParam(':password', $hashPW);
+	$sth->bindValue(':username', $username);
+	$sth->bindValue(':password', $hashPW);
 	
 	$sth->execute();
 	
@@ -223,8 +245,8 @@ function reset_password($username) {
 
 /**
  * This function grabs a word
- * @param unknown $min
- * @param unknown $max
+ * @Value unknown $min
+ * @Value unknown $max
  */
 function getWord($min, $max) {
 	
@@ -265,13 +287,13 @@ function getWord($min, $max) {
 
 function notify_password($username, $password) {
 	
-	$connection = new DBConnection();
+	$obj = new DBConnection();
 	
-	$sth = $connection->prepare('SELECT email
-    						     FROM customer
-    							 WHERE user_id = :username');
+	$sth = $obj->getConn()->prepare('SELECT email
+    						         FROM customer
+    							     WHERE user_id = :username');
 	
-	$sth->bindParam(':username', $username, PDO::PARAM_STR, 15);
+	$sth->bindValue(':username', $username, PDO::PARAM_STR);
 	
 	$sth->execute();
 	
@@ -301,4 +323,173 @@ function notify_password($username, $password) {
 	}
 	
 }
+/**
+ * 
+ * @param unknown $username
+ * @param unknown $hashPW
+ * @throws Exception
+ */
+function add_history($username, $hashPW) {
+
+	$obj = new DBConnection();
+	
+	//insert into database
+
+	$stmt = $obj->getConn()->prepare("INSERT INTO history (user_id, password)
+					      		      VALUES (:user_id, :password)");
+
+	$stmt->bindValue(":user_id", $username, PDO::PARAM_STR);
+	$stmt->bindValue(":password", $hashPW, PDO::PARAM_STR);
+
+	$stmt->execute();
+
+	$rows = $stmt->rowCount();
+
+	if($rows <= 0) {
+
+		error_log("Cannot add history");
+		throw new Exception('Error - Please try again later');
+	}
+
+	return true;
+}
+
+
+function get_failed_attempts($username) {
+
+	$obj = new DBConnection();
+
+	$sth = $obj->getConn()->prepare('SELECT failed_attempts
+    						         FROM customer
+    							     WHERE user_id = :username');
+
+	$sth->bindValue(':username', $username, PDO::PARAM_STR);
+
+	$sth->execute();
+
+	$result = $sth->fetchAll();
+
+	if(sizeof($result) > 0) {
+
+		return $result[0]['failed_attempts']; 
+	}
+
+	return  null;
+}
+
+function add_failed_attempts($username, $value) {
+
+	$obj = new DBConnection();
+	
+	$sth = $obj->getConn()->prepare('UPDATE customer
+    						         SET failed_attempts = :value
+    							     WHERE user_id = :username');
+
+	$sth->bindValue(':value', $value);
+	$sth->bindValue(':username', $username);
+
+	$sth->execute();
+	
+	$rows = $sth->rowCount();
+	
+	if($rows > 0) {
+	
+		return true;
+	} else {
+		throw new Exception('Cannot log in! Please try again later');
+	}	
+}
+
+/**
+ * 
+ * @param unknown $username
+ * @throws Exception
+ * @return boolean
+ */
+function lock_account($username) {
+	
+	$flag = 'O';//flag
+	
+	$obj = new DBConnection();
+	
+	$sth = $obj->getConn()->prepare('UPDATE customer
+    						         SET flag = :flag
+    							     WHERE user_id = :username');
+	
+	$sth->bindValue(':flag', $flag);
+	$sth->bindValue(':username', $username);
+	
+	
+	$sth->execute();
+	
+	$rows = $sth->rowCount();
+	
+	if($rows > 0) {
+	
+		return true;
+	} else if(is_locked($username)) {
+		error_log("Account already locked");
+		
+	} else {
+		
+		error_log("Cannot lock account");
+		throw new Exception('Cannot log in. Please try again later!');
+	}
+}
+
+function is_locked($username) {
+
+	$obj = new DBConnection();
+
+	$sth = $obj->getConn()->prepare('SELECT flag
+    						         FROM customer
+    							     WHERE user_id = :username');
+
+	$sth->bindValue(':username', $username, PDO::PARAM_STR);
+
+	$sth->execute();
+
+	$result = $sth->fetchAll();
+
+	if(sizeof($result) > 0) {
+
+		return $result[0]['flag'] == 'O';
+	}
+
+	return  null;
+}
+
+/**
+ *
+ * @param unknown $username
+ * @throws Exception
+ * @return boolean
+ */
+function update_login($username) {
+
+	$flag = 'O';//flag
+
+	$obj = new DBConnection();
+
+	$sth = $obj->getConn()->prepare('UPDATE customer
+    						         SET last_login = NOW()
+    							     WHERE user_id = :username');
+
+	$sth->bindValue(':username', $username);
+
+
+	$sth->execute();
+
+	$rows = $sth->rowCount();
+
+	if($rows > 0) {
+
+		return true;
+	} else {
+
+		error_log("Cannot update login date");
+		throw new Exception('Cannot log in. Please try again later!');
+	}
+}
+
 ?>

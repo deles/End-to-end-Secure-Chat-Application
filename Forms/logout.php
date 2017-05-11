@@ -20,7 +20,7 @@ if(!empty($old_user)) {
 		//If they were logged in and are now logged out
 		
 		echo 'Logged out. <br>';
-		do_html_url('login.php', 'Login');
+		do_html_url('https://unsecure.website/login.php', 'Login');
 	} else {
 		//They were logged in and can't be logged out
 		
@@ -33,7 +33,7 @@ if(!empty($old_user)) {
 	
 	echo 'You are not logged in. Therefore, you have not been logged out!<br>';
 	
-	do_html_url('login.php', 'Login');
+	do_html_url('https://unsecure.website/login.php', 'Login');
 }
 	do_html_footer();
 ?>

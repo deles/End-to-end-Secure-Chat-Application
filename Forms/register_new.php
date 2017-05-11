@@ -2,11 +2,11 @@
 
 require_once ('unsecure_fns.php');
 
-$email     = trim($_POST['email']);
-$username  = trim($_POST['username']);
+$email     = strtolower(trim($_POST['email']));
+$username  = strtolower(trim($_POST['username']));
 $firstName = trim($_POST['first-name']);
 $lastName  = trim($_POST['last-name']);
-$midName   = trim($_POST['middle-name']);
+$middleName   = trim($_POST['middle-name']);
 $password  = trim($_POST['password']);
 $password2 = trim($_POST['password2']);
 
@@ -21,36 +21,42 @@ session_start();//May need this later
 
 try {
 	
-	if(!filled_out($POST)) {
+	if(!filled_out($_POST)) {
 		
 		throw new Exception('You have not filled the form out correctly - 
-				Please go back and try again.');
+				Please go back and try again.'); 
 	}
 	
-	//Validate email
+	if($password != $password2) {
+		throw new Exception('Passwords do not match.');
+	}
+	
+	if(strlen($password) < 8) {
+		throw new Exception('Password too short!');
+	}
+
+	
+	if(!preg_match("#[0-9]+#", $password) ) {
+		throw new Exception('Password must include at least one number!');
+	}
+	
+	if(!preg_match("#[a-z]+#", $password) ) {
+		throw new Exception("Password must include at least one letter!");
+	}
+	
+	if(!preg_match("#[A-Z]+#", $password) ) {
+			throw new Exception("Password must include at least one capital letter");
+	}
+	
+	if(!preg_match("#\W+#", $password) ) {
+		
+			throw new Exception("Password must include at least one symbol!");
+	}
 	
 	if(!valid_email($email)) {
 		
-		throw new Exception('This is not a valid email address -
-				Please go back and try again.');
+		throw new Exception("Email invalid!");
 	}
-	
-	//Check passwords
-	
-	if($password != password2) {
-		throw new Exception('You have not filled the form out correctly -
-				Please go back and try again.');
-	}
-	
-	//Check length
-	
-	if((strlen($password) < 12) || (strlen($password) > 160)) {
-		
-		throw new Exception('Password must be between 12 and 160 characters -
-				Please go back and try again.');
-		
-	}
-	
 	//Attempt to register
 	
 	register($username, $password, $email, $phone, $firstName,
@@ -64,7 +70,7 @@ try {
 	
 	echo 'Your registration was succesful. Go to the members page to start chatting!';
 	
-	do_html_url('member.php', 'Go to members page');
+	do_html_url('https://unsecure.website/member.php', 'Go to members page');
 	
 	//End page
 	
@@ -72,8 +78,11 @@ try {
 	
 } catch (Exception $e) {
 	
-	do_html_header('Problem');
+	do_html_header('Problem:');
 	echo $e->getMessage();
+	
+	do_html_url('https://unsecure.website/register_form.php', 'Register');
+	
 	do_html_footer();
 	exit;
 }

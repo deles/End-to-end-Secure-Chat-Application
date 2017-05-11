@@ -19,7 +19,7 @@ try {
 	echo 'Your password could not be reset. Please try again later.';
 }
 
-do_html_url('login.php', 'Login');
+do_html_url('https://unsecure.website/login.php', 'Login');
 do_html_footer();
 
 

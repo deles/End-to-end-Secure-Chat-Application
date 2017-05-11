@@ -6,6 +6,7 @@
 	//display_site_info();
 	display_login_form();
 	
+	do_html_url('https://unsecure.website/register_form.php', 'Register');
 	do_html_footer();
 	
 	

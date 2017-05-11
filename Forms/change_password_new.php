@@ -11,7 +11,7 @@ session_start();//May need this later
 
 try {
 	
-	if(!filled_out($POST)) {
+	if(!filled_out($_POST)) {
 		
 		throw new Exception('You have not filled the form out correctly - 
 				Please go back and try again.');
@@ -19,19 +19,42 @@ try {
 
 	//Check passwords
 	
-	if($password != password2) {
+	if($password != $password2) {
 		throw new Exception('You have not filled the form out correctly -
 				Please go back and try again.');
 	}
 	
-	//Check length
+	if( strlen($password) < 8) {
+		throw new Exception('Password too short!');
+	}
+
 	
-	if((strlen($password) < 12) || (strlen($password) > 160)) {
+	if( !preg_match("#[0-9]+#", $password) ) {
+		throw new Exception('Password must include at least one number!');
+	}
+	
+	if( !preg_match("#[a-z]+#", $password) ) {
+		throw new Exception("Password must include at least one letter!");
+	}
+	
+	if( !preg_match("#[A-Z]+#", $password) ) {
+			throw new Exception("Password must include at least one capital letter");
+	}
+	
+	if( !preg_match("#\W+#", $password) ) {
 		
-		throw new Exception('Password must be between 12 and 160 characters -
-				Please go back and try again.');
+			throw new Exception("Password must include at least one symbol!");
+	}
+	
+	if(is_old($_SESSION['valid_user'], $password)) {
 		
-	} 
+		throw new Exception("Password must not have been previously used!");
+	}
+	
+	if(!has_account($_SESSION['valid_user'], $oldPassword)) {//If old password is not valid
+		
+		throw new Exception("Old password is invalid!");
+	}
 	
 	change_password($_SESSION['valid_user'], $oldPassword, $password);
 	
@@ -39,7 +62,7 @@ try {
 	
 	echo 'Your Password was changed succesfully. Please login.';
 	
-	do_html_url('login.php', 'Login');
+	do_html_url('https://unsecure.website/login.php', 'Login');
 	
 	//End page
 	

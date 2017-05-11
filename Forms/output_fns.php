@@ -33,6 +33,27 @@ function do_html_header($title) {
 <?php 
 }
 
+function do_html_heading($title) {
+	
+	
+?>
+
+<!DOCTYPE html>
+
+<html>
+
+<body> 
+
+<title><?php $title?></title>
+
+</body>
+</html>
+
+<?php 
+
+}
+
+
 function do_html_footer() { ?>
 
 	<!DOCTYPE html>
@@ -62,18 +83,18 @@ function display_login_form () {
 	
 	<hl> Please Log In:</hl>
 	
-	<form method="post" action="member.php">
+	<form method="post" action="https://unsecure.website/member.php">
 	
 	<div class="row">
 	
-		<div class="col-md-3"><label for="name">Username:</label></div>
-		<div class="col-md-5"> <input  type="text" name="name" id="name" maxlength="15" /> </div>
+		<div class="col-md-3"><label for="username">Username:</label></div>
+		<div class="col-md-5"> <input  type="text" name="username" id="username" value="" maxlength="255" /> </div>
 		<div class="col-md-4"></div>  
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="password">Password:</label></div>
-		<div class="col-md-5"> <input  type="text" name="password" id="password" maxlength="15" /> </div>  
+		<div class="col-md-5"> <input  type="password" name="password" id="password" value="" maxlength="255" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
@@ -104,84 +125,84 @@ function display_registration_form() {
 	
 	<hl> Registration Form:</hl>
 	
-	<form method="post" action="register_new.php">
+	<form method="post" action="https://unsecure.website/register_new.php">
 	
 	 <div class="row">
     	<div class="col-md-3"><label for="username">Username (max 16 chars):</label></div>
-    	<div class="col-md-5"> <input  type="text" name="username" id="username" maxlength="15" /> </div>
+    	<div class="col-md-5"> <input  type="text" name="username" id="username" value="" maxlength="15" /> </div>
     	<div class="col-md-4"></div>
 	</div>
 	
 	 <div class="row">
-    	<div class="col-md-3"><label for="password">Password (12-160 chars):</label></div>
-		<div class="col-md-5"> <input  type="text" name="password" id="password" maxlength="255" /> </div> 
+    	<div class="col-md-3"><label for="password">Password (Must be at least 8 characters, at least one number, at least one letter, at least one capital letter, and at least one symbol (i.e, $,#,%):</label></div>
+		<div class="col-md-5"> <input  type="password" name="password" id="password" value="" maxlength="255" /> </div> 
 		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="password2">Re-enter Password:</label></div>
-		<div class="col-md-5"> <input  type="text" name="password2" id="password2" maxlength="255" /> </div> 
+		<div class="col-md-5"> <input  type="password" name="password2" id="password2" value="" maxlength="255" /> </div> 
 		<div class="col-md-4"></div> 
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="first-name">First Name:</label></div>
-		<div class="col-md-5"> <input  type="text" name="first-name" id="first-name" maxlength="15" /> </div>
+		<div class="col-md-5"> <input  type="text" name="first-name" id="first-name" value="" maxlength="15" /> </div>
 		<div class="col-md-4"></div>  
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="middle-name">Middle Name:</label></div>
-		<div class="col-md-5"> <input  type="text" name="middle-name" id="middle-name" maxlength="15" /> </div>
+		<div class="col-md-5"> <input  type="text" name="middle-name" id="middle-name" value="" maxlength="15" /> </div>
 		<div class="col-md-4"></div>  
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="last-name">Last Name:</label></div>
-		<div class="col-md-5"> <input  type="text" name="last-name" id="last-name" maxlength="15" /> </div>  
+		<div class="col-md-5"> <input  type="text" name="last-name" id="last-name" value="" maxlength="15" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="address">Address:</label></div>
-		<div class="col-md-5"> <input  type="text" name="address" id="address" maxlength="30" /> </div>  
+		<div class="col-md-5"> <input  type="text" name="address" id="address" value="" maxlength="30" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row">
 	
 		<div class="col-md-3"><label for="city">City:</label></div>
-		<div class="col-md-5"> <input  type="text" name="city" id="city" maxlength="30" /> </div> 
+		<div class="col-md-5"> <input  type="text" name="city" id="city" value="" maxlength="30" /> </div> 
 		<div class="col-md-4"></div> 
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="state">State:</label></div>
-		<div class="col-md-5"> <input  type="text" name="state" id="state" maxlength="30" /> </div> 
+		<div class="col-md-5"> <input  type="text" name="state" id="state" value="" maxlength="30" /> </div> 
 		<div class="col-md-4"></div> 
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="country">Country:</label></div>
-		<div class="col-md-5"> <input  type="text" name="country" id="country" maxlength="30" /> </div>  
+		<div class="col-md-5"> <input  type="text" name="country" id="country" value="" maxlength="30" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="zip-code">Zip-code:</label></div>
-		<div class="col-md-5"> <input  type="text" name="zip-code" id="zip-code" maxlength="15" /> </div> 
+		<div class="col-md-5"> <input  type="text" name="zip-code" id="zip-code" value="" maxlength="15" /> </div> 
 		<div class="col-md-4"></div> 
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="phone">Phone:</label></div>
-		<div class="col-md-5"> <input  type="text" name="phone" id="phone" maxlength="15" /> </div>  
+		<div class="col-md-5"> <input  type="text" name="phone" id="phone" value="" maxlength="15" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="email">Email:</label></div>
-		<div class="col-md-5"> <input  type="text" name="email" id="email" maxlength="30" /> </div>  
+		<div class="col-md-5"> <input  type="text" name="email" id="email" value="" maxlength="30" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
@@ -234,24 +255,24 @@ function display_password_form() {
 	
 	<hl> Change Password:</hl>
 	
-	<form method="post" action="change_password_new.php">
+	<form method="post" action="https://unsecure.website/change_password_new.php">
 	
 	<div class="row">
 	
 		<div class="col-md-3"><label for="old-password">Old Password:</label></div>
-		<div class="col-md-5"> <input  type="text" name="old-password" id="old-password" maxlength="255" /> </div>
+		<div class="col-md-5"> <input  type="password" name="old-password" id="old-password" value="" maxlength="255" /> </div>
 		<div class="col-md-4"></div>  
 	</div>
 	
 	<div class="row">
-		<div class="col-md-3"><label for="password">Password:</label></div>
-		<div class="col-md-5"> <input  type="text" name="password" id="password" maxlength="255" /> </div>  
+		<div class="col-md-3"><label for="password">Password (Must be at least 8 characters, at least one number, at least one letter, at least one capital letter, and at least one symbol (i.e, $,#,%):</label></div>
+		<div class="col-md-5"> <input  type="password" name="password" id="password"  value="" maxlength="255" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row">
 		<div class="col-md-3"><label for="password2">Re-enter Password:</label></div>
-		<div class="col-md-5"> <input  type="text" name="password2" id="password2" maxlength="255" /> </div>  
+		<div class="col-md-5"> <input  type="password" name="password2" id="password2" value="" maxlength="255" /> </div>  
 		<div class="col-md-4"></div>
 	</div>
 	
@@ -269,6 +290,7 @@ function display_password_form() {
 <?php
 
 } 
+
 
 function display_forgot_form() {
 	
@@ -289,7 +311,7 @@ function display_forgot_form() {
 	<div class="row">
 	
 		<div class="col-md-3"><label for="username">Enter your username:</label></div>
-		<div class="col-md-5"> <input  type="text" name="username" id="username" maxlength="15" /> </div>
+		<div class="col-md-5"> <input  type="text" name="username" id="username" value="" maxlength="15" /> </div>
 		<div class="col-md-4"></div>  
 	</div>
 	
@@ -307,5 +329,54 @@ function display_forgot_form() {
 
 } 
 
+function display_chat() {
+	
 ?>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="bubble.css">
+  
+</head>
+
+<body> 
+
+<div id="uc"><h1 style="text-align:center"> Unsecure Chat</h1></div>
+
+<div class="container">
+	
+	<div class="panel panel-default"> 
+		<div class="panel-heading">
+			<h2 class="panel-title">We're watching you...</h2>
+		</div>
+		
+		<div class="panel-body" id="chatPanel"></div>
+		<div class="panel-footer">
+			<div class="input-group">
+				<input type="type" class="form-control" id="chatMessage" placeholder="Type a message"/>
+			    <span class=""input-group-btn">
+			    	<button id="sendMessageBtn" class="btn btn-primary has-spinner" type="button"> 
+			    		<span class="spinner"><i class="icon-spin icon-refresh"></i></span> Send
+			    	</button>
+			    </span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="client.js"></script>
+</body>
+</html>
+
+
+
+
+<?php 
+
+}?>
 
